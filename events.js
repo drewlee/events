@@ -31,6 +31,8 @@ var Event = (function(){
 				this.cancelBubble = true;
 			};
 			
+			e.target = e.srcElement;
+			
 			h.call(el, e);
 		}
 	},
@@ -107,11 +109,11 @@ var Event = (function(){
 			// fix IE event handler
 			var fixedHandler = fixHandler(element, handler);
 			
-			// store unique id on fixed handler
-			fixedHandler.instance = 'guid' + count;
-			
 			// prepare element object properties
 			setData.apply(this, arguments);
+			
+			// store unique id on fixed handler too
+			fixedHandler.instance = handler.instance;
 			
 			// store fixed handler function
 			element.events[evtName][handler.instance] = fixedHandler;
