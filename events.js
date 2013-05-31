@@ -1,25 +1,28 @@
 var Event = (function(){
-	// PRIVATE MEMBERS
 	// unique id generator
-	var count = 0,
+	var count = 0;
 	
 	// prepares objects before saving data
-	setData = function(element, evtName, handler){
+	function setData(element, evtName, handler){
 		// check events property on element
-		if(!('events' in element)){element.events = {};}
+		if (!('events' in element)){
+			element.events = {};
+		}
 		
 		// check event name property on events object
-		if(!(evtName in element.events)){element.events[evtName] = {};}
+		if( !(evtName in element.events)){
+			element.events[evtName] = {};
+		}
 		
 		// check if unique instance is assigned on handler
-		if(!('instance' in handler)){
+		if (!('instance' in handler)){
 			handler.instance = 'guid' + count;
 			count++;
 		}
-	},
+	}
 	
 	// fixes event object for IE
-	fixHandler = function(el, h){
+	function fixHandler(el, h){
 		return function(){
 			var e = window.event;
 			
@@ -34,30 +37,30 @@ var Event = (function(){
 			e.target = e.srcElement;
 			
 			h.call(el, e);
-		}
-	},
+		};
+	}
 	
 	// iterate thru event names to get stored handlers
-	iterate = function(callback, element, evtName){
-		for(var prop in element.events[evtName]){
+	function iterate(callback, element, evtName){
+		for (var prop in element.events[evtName]){
 			callback(element, evtName, element.events[evtName][prop]);
 		}
-	},
+	}
 	
 	// remove event listener in w3c compliant browsers
-	removeEventW3C = function(element, evtName, handler){
+	function removeEventW3C(element, evtName, handler){
 		element.removeEventListener(evtName, handler);
 		delete element.events[evtName][handler.instance];
-	},
+	}
 	
 	// remove event listener in IE
-	removeEventIE = function(element, evtName, handler){
+	function removeEventIE(element, evtName, handler){
 		element.detachEvent('on' + evtName, element.events[evtName][handler.instance]);
 		delete element.events[evtName][handler.instance];
-	},
+	}
 	
 	// routing based on number of supplied arguments
-	handleRemove = function(callback, element, evtName, handler){
+	function handleRemove(callback, element, evtName, handler){
 		switch(arguments.length - 1){
 			// only element name given
 			case 1:
@@ -76,11 +79,11 @@ var Event = (function(){
 				callback(element, evtName, handler);
 				break;
 		}
-	},
+	}
 	
 	// PUBLIC MEMBERS
 	// W3C compliant event model
-	w3c = {
+	var w3c = {
 		add: function(element, evtName, handler){
 			// prepare element object properties
 			setData.apply(this, arguments);
@@ -92,19 +95,21 @@ var Event = (function(){
 			element.addEventListener(evtName, handler, false);
 		},
 		remove: function(){
+			var args;
+
 			// convert arguments to an array
-			arguments = Array.prototype.slice.call(arguments);
+			args = Array.prototype.slice.call(arguments);
 			
 			// add callback as first array element
-			arguments.unshift(removeEventW3C);
+			args.unshift(removeEventW3C);
 			
 			// handle unbinding events
-			handleRemove.apply(this, arguments);
+			handleRemove.apply(this, args);
 		}
-	},
+	};
 	
 	// IE event model
-	ie = {
+	var ie = {
 		add: function(element, evtName, handler){
 			// fix IE event handler
 			var fixedHandler = fixHandler(element, handler);
@@ -122,11 +127,13 @@ var Event = (function(){
 			element.attachEvent('on' + evtName, fixedHandler);
 		},
 		remove: function(){
+			var args;
+
 			// convert arguments to an array
-			arguments = Array.prototype.slice.call(arguments);
+			args = Array.prototype.slice.call(arguments);
 			
 			// add callback as first array element
-			arguments.splice(0, 0, removeEventIE);
+			args.splice(0, 0, removeEventIE);
 			
 			// handle unbinding events
 			handleRemove.apply(this, arguments);
