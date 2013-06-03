@@ -153,7 +153,7 @@ var Event = (function(){
     },
 
     /**
-     * Remove event handler for standard compliant browsers. As a convenienve, the remove method 
+     * Remove event handler for standard compliant browsers. As a convenience, the remove method 
      * takes a variable number of arguments, with element as the only required argument. If only 
      * element is provided, all event handlers are removed from the element. If element and event 
      * type is provided, all event handlers of the same type are removed.
@@ -201,7 +201,7 @@ var Event = (function(){
     },
 
     /**
-     * Remove event handler for IE. As a convenienve, the remove method takes a variable number of
+     * Remove event handler for IE. As a convenience, the remove method takes a variable number of
      * arguments, with element as the only required argument. If only element is provided, all event
      * handlers are removed from the element. If element and event type is provided, all event
      * handlers of the same type are removed.
